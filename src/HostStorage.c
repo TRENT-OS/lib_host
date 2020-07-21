@@ -30,7 +30,7 @@ allocFile(
     void)
 {
     static uint8_t empty[1024];
-    size_t left;
+    off_t left;
     FILE* fp;
     int rc;
 
@@ -97,7 +97,7 @@ HostStorage_setFileName(
 
 OS_Error_t
 HostStorage_write(
-    size_t  const offset,
+    off_t   const offset,
     size_t  const size,
     size_t* const written)
 {
@@ -140,7 +140,7 @@ HostStorage_write(
 
 OS_Error_t
 HostStorage_read(
-    size_t  const offset,
+    off_t   const offset,
     size_t  const size,
     size_t* const read)
 {
@@ -182,13 +182,13 @@ HostStorage_read(
 
 OS_Error_t
 HostStorage_erase(
-    size_t  const offset,
-    size_t  const size,
-    size_t* const erased)
+    off_t  const offset,
+    off_t  const size,
+    off_t* const erased)
 {
     static uint8_t empty[1024];
     FILE* fp;
-    size_t left;
+    off_t left;
     int rc;
 
     if (!checkFile())
@@ -233,7 +233,7 @@ HostStorage_erase(
 
 OS_Error_t
 HostStorage_getSize(
-    size_t* const size)
+    off_t* const size)
 {
     *size = hostFileSize;
     return OS_SUCCESS;
