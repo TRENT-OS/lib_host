@@ -172,14 +172,45 @@ HostStorage_erase(
     size_t  const size,
     size_t* const erased)
 {
-    if (size > OS_Dataport_getSize(dataport))
+    static uint8_t empty[1024];
+    FILE* fp;
+    size_t left;
+
+    if (!checkFile())
     {
-        return OS_ERROR_BUFFER_TOO_SMALL;
+        if (!allocFile())
+        {
+            return OS_ERROR_GENERIC;
+        }
+        Debug_LOG_INFO("Allocated file '%s' with %zu bytes", hostFileName,
+                       hostFileSize);
     }
 
-    memset(OS_Dataport_getBuf(dataport), 0xff, size);
+    memset(empty, 0xff, sizeof(empty));
 
-    return HostStorage_write(offset, size, erased);
+    if ((fp = fopen(hostFileName, "r+b")) == NULL)
+    {
+        Debug_LOG_ERROR("fopen() failed on '%s'", hostFileName);
+        return OS_ERROR_GENERIC;
+    }
+
+    fseek(fp, offset, SEEK_SET);
+
+    *erased = 0;
+    left    = size;
+    while (left >= sizeof(empty))
+    {
+        *erased += fwrite(empty, 1, sizeof(empty), fp);
+        left    -= sizeof(empty);
+    }
+    if (left > 0)
+    {
+        *erased += fwrite(empty, 1, left, fp);
+    }
+
+    fclose(fp);
+
+    return OS_SUCCESS;
 }
 
 OS_Error_t
