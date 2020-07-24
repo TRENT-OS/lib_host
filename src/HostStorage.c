@@ -30,7 +30,7 @@ allocFile(
     void)
 {
     static uint8_t empty[1024];
-    size_t wr;
+    size_t left;
     FILE* fp;
 
     memset(empty, 0xff, sizeof(empty));
@@ -42,11 +42,15 @@ allocFile(
     }
     fseek(fp, 0, SEEK_SET);
 
-    wr = 0;
-    while (wr < hostFileSize)
+    left = hostFileSize;
+    while (left >= sizeof(empty))
     {
         fwrite(empty, sizeof(empty), 1, fp);
-        wr += sizeof(empty);
+        left -= sizeof(empty);
+    }
+    if (left > 0)
+    {
+        fwrite(empty, left, 1, fp);
     }
 
     fclose(fp);
