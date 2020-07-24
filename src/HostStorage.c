@@ -19,6 +19,10 @@ FakeDataport_t* hostStorage_dp = &fsBuf;
 
 static OS_Dataport_t dataport = OS_DATAPORT_ASSIGN(hostStorage_dp);
 
+// Allow these to be overriden by user
+static char   hostFileName[HOSTSTORAGE_FILE_NAME_MAX] = HOSTSTORAGE_FILE_NAME;
+static size_t hostFileSize = HOSTSTORAGE_SIZE;
+
 // Private Functions -----------------------------------------------------------
 
 static bool
@@ -31,7 +35,7 @@ allocFile(
 
     memset(empty, 0xff, sizeof(empty));
 
-    if ((fp = fopen(HOSTSTORAGE_FILE_NAME, "wb")) == NULL)
+    if ((fp = fopen(hostFileName, "wb")) == NULL)
     {
         Debug_LOG_ERROR("fopen() failed");
         return false;
@@ -39,7 +43,7 @@ allocFile(
     fseek(fp, 0, SEEK_SET);
 
     wr = 0;
-    while (wr < HOSTSTORAGE_SIZE)
+    while (wr < hostFileSize)
     {
         fwrite(empty, sizeof(empty), 1, fp);
         wr += sizeof(empty);
@@ -56,18 +60,32 @@ checkFile(
 {
     struct stat st;
 
-    if (access(HOSTSTORAGE_FILE_NAME, F_OK) != -1)
+    if (access(hostFileName, F_OK) != -1)
     {
-        stat(HOSTSTORAGE_FILE_NAME, &st);
+        stat(hostFileName, &st);
         Debug_LOG_TRACE("File '%s' exists with %lli bytes (we expect %zu bytes)",
-                        HOSTSTORAGE_FILE_NAME, st.st_size, HOSTSTORAGE_SIZE);
-        return (st.st_size == HOSTSTORAGE_SIZE);
+                        hostFileName, st.st_size, hostFileSize);
+        return (st.st_size == hostFileSize);
     }
 
     return false;
 }
 
 // Public Functions -----------------------------------------------------------
+
+void
+HostStorage_setFileSize(
+    const size_t sz)
+{
+    hostFileSize = sz;
+}
+
+void
+HostStorage_setFileName(
+    const char* name)
+{
+    strncpy(hostFileName, name, sizeof(hostFileName));
+}
 
 OS_Error_t
 HostStorage_write(
@@ -88,14 +106,13 @@ HostStorage_write(
         {
             return OS_ERROR_GENERIC;
         }
-        Debug_LOG_INFO("Allocated file '%s' with %zu bytes",
-                       HOSTSTORAGE_FILE_NAME,
-                       HOSTSTORAGE_SIZE);
+        Debug_LOG_INFO("Allocated file '%s' with %zu bytes", hostFileName,
+                       hostFileSize);
     }
 
-    if ((fp = fopen(HOSTSTORAGE_FILE_NAME, "r+b")) == NULL)
+    if ((fp = fopen(hostFileName, "r+b")) == NULL)
     {
-        Debug_LOG_ERROR("fopen() failed on '%s'", HOSTSTORAGE_FILE_NAME);
+        Debug_LOG_ERROR("fopen() failed on '%s'", hostFileName);
         return OS_ERROR_GENERIC;
 
     }
@@ -127,14 +144,13 @@ HostStorage_read(
         {
             return OS_ERROR_GENERIC;
         }
-        Debug_LOG_INFO("Allocated file '%s' with %zu bytes",
-                       HOSTSTORAGE_FILE_NAME,
-                       HOSTSTORAGE_SIZE);
+        Debug_LOG_INFO("Allocated file '%s' with %zu bytes", hostFileName,
+                       hostFileSize);
     }
 
-    if ((fp = fopen(HOSTSTORAGE_FILE_NAME, "rb")) == NULL)
+    if ((fp = fopen(hostFileName, "rb")) == NULL)
     {
-        Debug_LOG_ERROR("fopen() failed on '%s'", HOSTSTORAGE_FILE_NAME);
+        Debug_LOG_ERROR("fopen() failed on '%s'", hostFileName);
         return OS_ERROR_GENERIC;
     }
 
@@ -163,9 +179,10 @@ HostStorage_erase(
 }
 
 OS_Error_t
-HostStorage_getSize(size_t* const size)
+HostStorage_getSize(
+    size_t* const size)
 {
-    *size = HOSTSTORAGE_SIZE;
+    *size = hostFileSize;
     return OS_SUCCESS;
 }
 

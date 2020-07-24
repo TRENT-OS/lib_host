@@ -8,6 +8,9 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <sys/types.h>
+
+#define HOSTSTORAGE_FILE_NAME_MAX (64)
 
 #if !defined(HOSTSTORAGE_FILE_NAME)
 #   define HOSTSTORAGE_FILE_NAME "nvm_06"
@@ -16,6 +19,8 @@
 #if !defined(HOSTSTORAGE_SIZE)
 #   define HOSTSTORAGE_SIZE ((size_t)(1 * 1024 * 1024))
 #endif
+
+// Equivalent of CAmkES if_OS_Storage interface --------------------------------
 
 OS_Error_t
 HostStorage_write(
@@ -42,3 +47,13 @@ HostStorage_getSize(
 OS_Error_t
 HostStorage_getState(
     uint32_t* flags);
+
+// Additonal functionality -----------------------------------------------------
+
+void
+HostStorage_setFileSize(
+    const size_t sz);
+
+void
+HostStorage_setFileName(
+    const char* name);
