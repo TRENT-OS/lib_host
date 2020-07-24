@@ -32,6 +32,7 @@ allocFile(
     static uint8_t empty[1024];
     size_t left;
     FILE* fp;
+    int rc;
 
     memset(empty, 0xff, sizeof(empty));
 
@@ -40,7 +41,11 @@ allocFile(
         Debug_LOG_ERROR("fopen() failed");
         return false;
     }
-    fseek(fp, 0, SEEK_SET);
+    if ((rc = fseek(fp, 0, SEEK_SET)) != 0)
+    {
+        Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
+        return OS_ERROR_GENERIC;
+    }
 
     left = hostFileSize;
     while (left >= sizeof(empty))
@@ -98,6 +103,7 @@ HostStorage_write(
     size_t* const written)
 {
     FILE* fp;
+    int rc;
 
     if (size > OS_Dataport_getSize(dataport))
     {
@@ -120,10 +126,15 @@ HostStorage_write(
         return OS_ERROR_GENERIC;
 
     }
+    if ((rc = fseek(fp, offset, SEEK_SET)) != 0)
+    {
+        Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
+        return OS_ERROR_GENERIC;
+    }
 
-    fseek(fp, offset, SEEK_SET);
     *written = fwrite(OS_Dataport_getBuf(dataport), size, 1, fp);
     *written = *written * size;
+
     fclose(fp);
 
     return OS_SUCCESS;
@@ -136,6 +147,7 @@ HostStorage_read(
     size_t* const read)
 {
     FILE* fp;
+    int rc;
 
     if (size > OS_Dataport_getSize(dataport))
     {
@@ -157,10 +169,15 @@ HostStorage_read(
         Debug_LOG_ERROR("fopen() failed on '%s'", hostFileName);
         return OS_ERROR_GENERIC;
     }
+    if ((rc = fseek(fp, offset, SEEK_SET)) != 0)
+    {
+        Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
+        return OS_ERROR_GENERIC;
+    }
 
-    fseek(fp, offset, SEEK_SET);
     *read = fread(OS_Dataport_getBuf(dataport), size, 1, fp);
     *read = *read * size;
+
     fclose(fp);
 
     return OS_SUCCESS;
@@ -175,6 +192,7 @@ HostStorage_erase(
     static uint8_t empty[1024];
     FILE* fp;
     size_t left;
+    int rc;
 
     if (!checkFile())
     {
@@ -193,8 +211,11 @@ HostStorage_erase(
         Debug_LOG_ERROR("fopen() failed on '%s'", hostFileName);
         return OS_ERROR_GENERIC;
     }
-
-    fseek(fp, offset, SEEK_SET);
+    if ((rc = fseek(fp, offset, SEEK_SET)) != 0)
+    {
+        Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
+        return OS_ERROR_GENERIC;
+    }
 
     *erased = 0;
     left    = size;
