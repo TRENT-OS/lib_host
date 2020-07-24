@@ -50,17 +50,16 @@ allocFile(
     left = hostFileSize;
     while (left >= sizeof(empty))
     {
-        fwrite(empty, sizeof(empty), 1, fp);
-        left -= sizeof(empty);
+        left -= fwrite(empty, 1, sizeof(empty), fp);
     }
     if (left > 0)
     {
-        fwrite(empty, left, 1, fp);
+        left -= fwrite(empty, 1, left, fp);
     }
 
     fclose(fp);
 
-    return true;
+    return (left == 0);
 }
 
 static bool
@@ -132,8 +131,7 @@ HostStorage_write(
         return OS_ERROR_GENERIC;
     }
 
-    *written = fwrite(OS_Dataport_getBuf(dataport), size, 1, fp);
-    *written = *written * size;
+    *written = fwrite(OS_Dataport_getBuf(dataport), 1, size, fp);
 
     fclose(fp);
 
@@ -175,8 +173,7 @@ HostStorage_read(
         return OS_ERROR_GENERIC;
     }
 
-    *read = fread(OS_Dataport_getBuf(dataport), size, 1, fp);
-    *read = *read * size;
+    *read = fread(OS_Dataport_getBuf(dataport), 1, size, fp);
 
     fclose(fp);
 
