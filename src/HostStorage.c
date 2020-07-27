@@ -101,6 +101,7 @@ HostStorage_write(
     size_t  const size,
     size_t* const written)
 {
+    *written = 0;
     FILE* fp;
     int rc;
 
@@ -144,6 +145,7 @@ HostStorage_read(
     size_t  const size,
     size_t* const read)
 {
+    *read = 0;
     FILE* fp;
     int rc;
 
@@ -186,6 +188,7 @@ HostStorage_erase(
     off_t  const size,
     off_t* const erased)
 {
+    *erased = 0;
     static uint8_t empty[1024];
     FILE* fp;
     off_t left;
