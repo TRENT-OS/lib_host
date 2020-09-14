@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 static FakeDataport_t fsBuf;
 FakeDataport_t* hostStorage_dp = &fsBuf;
@@ -71,7 +72,8 @@ checkFile(
     if (access(hostFileName, F_OK) != -1)
     {
         stat(hostFileName, &st);
-        Debug_LOG_TRACE("File '%s' exists with %lli bytes (we expect %zu bytes)",
+        Debug_LOG_TRACE("File '%s' exists with %" PRIiMAX
+                        " bytes (we expect %zu bytes)",
                         hostFileName, st.st_size, hostFileSize);
         return (st.st_size == hostFileSize);
     }
