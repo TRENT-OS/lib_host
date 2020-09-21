@@ -111,6 +111,10 @@ HostStorage_write(
     {
         return OS_ERROR_BUFFER_TOO_SMALL;
     }
+    if ((offset + size) > hostFileSize)
+    {
+        return OS_ERROR_INVALID_PARAMETER;
+    }
 
     if (!checkFile())
     {
@@ -155,6 +159,10 @@ HostStorage_read(
     {
         return OS_ERROR_BUFFER_TOO_SMALL;
     }
+    if ((offset + size) > hostFileSize)
+    {
+        return OS_ERROR_INVALID_PARAMETER;
+    }
 
     if (!checkFile())
     {
@@ -196,6 +204,10 @@ HostStorage_erase(
     off_t left;
     int rc;
 
+    if ((offset + size) > hostFileSize)
+    {
+        return OS_ERROR_INVALID_PARAMETER;
+    }
     if (!checkFile())
     {
         if (!allocFile())
@@ -240,7 +252,13 @@ OS_Error_t
 HostStorage_getSize(
     off_t* const size)
 {
+    if (NULL == size)
+    {
+        return OS_ERROR_INVALID_PARAMETER;
+    }
+
     *size = hostFileSize;
+
     return OS_SUCCESS;
 }
 
