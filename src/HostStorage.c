@@ -45,6 +45,7 @@ allocFile(
     if ((rc = fseek(fp, 0, SEEK_SET)) != 0)
     {
         Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
+        fclose(fp);
         return false;
     }
 
@@ -135,6 +136,7 @@ HostStorage_write(
     if ((rc = fseek(fp, offset, SEEK_SET)) != 0)
     {
         Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
+        fclose(fp);
         return OS_ERROR_GENERIC;
     }
 
@@ -182,6 +184,7 @@ HostStorage_read(
     if ((rc = fseek(fp, offset, SEEK_SET)) != 0)
     {
         Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
+        fclose(fp);
         return OS_ERROR_GENERIC;
     }
 
@@ -228,6 +231,7 @@ HostStorage_erase(
     if ((rc = fseek(fp, offset, SEEK_SET)) != 0)
     {
         Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
+        fclose(fp);
         return OS_ERROR_GENERIC;
     }
 
