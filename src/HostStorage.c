@@ -45,7 +45,7 @@ allocFile(
     if ((rc = fseek(fp, 0, SEEK_SET)) != 0)
     {
         Debug_LOG_ERROR("fseek() failed on '%s' with %d", hostFileName, rc);
-        return OS_ERROR_GENERIC;
+        return false;
     }
 
     left = hostFileSize;
