@@ -23,6 +23,7 @@ static OS_Dataport_t dataport = OS_DATAPORT_ASSIGN(hostStorage_dp);
 // Allow these to be overriden by user
 static char   hostFileName[HOSTSTORAGE_FILE_NAME_MAX] = HOSTSTORAGE_FILE_NAME;
 static size_t hostFileSize = HOSTSTORAGE_SIZE;
+static size_t hostBlockSz  = HOSTSTORAGE_BLOCK_SZ;
 
 // Private Functions -----------------------------------------------------------
 
@@ -89,6 +90,13 @@ HostStorage_setFileSize(
     const size_t sz)
 {
     hostFileSize = sz;
+}
+
+void
+HostStorage_setBlockSize(
+    const size_t blockSz)
+{
+    hostBlockSz = blockSz;
 }
 
 void
@@ -262,6 +270,20 @@ HostStorage_getSize(
     }
 
     *size = hostFileSize;
+
+    return OS_SUCCESS;
+}
+
+OS_Error_t
+HostStorage_getBlockSize(
+    size_t* blockSize)
+{
+    if (NULL == blockSize)
+    {
+        return OS_ERROR_INVALID_PARAMETER;
+    }
+
+    *blockSize = HOSTSTORAGE_BLOCK_SZ;
 
     return OS_SUCCESS;
 }

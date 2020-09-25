@@ -20,6 +20,10 @@
 #   define HOSTSTORAGE_SIZE (((off_t)1) * 1024 * 1024)
 #endif
 
+#if !defined(HOSTSTORAGE_BLOCK_SZ)
+#   define HOSTSTORAGE_BLOCK_SZ     1U
+#endif
+
 // Equivalent of CAmkES if_OS_Storage interface --------------------------------
 
 OS_Error_t
@@ -45,6 +49,10 @@ HostStorage_getSize(
     off_t*  const size);
 
 OS_Error_t
+HostStorage_getBlockSize(
+    size_t* blockSize);
+
+OS_Error_t
 HostStorage_getState(
     uint32_t* flags);
 
@@ -53,6 +61,10 @@ HostStorage_getState(
 void
 HostStorage_setFileSize(
     const size_t sz);
+
+void
+HostStorage_setBlockSize(
+    const size_t blockSz);
 
 void
 HostStorage_setFileName(
