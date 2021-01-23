@@ -232,9 +232,3 @@ TEST(Test_HostStorage, change_file)
         ASSERT_EQ(0xff, *((uint8_t*)OS_Dataport_getBuf(storage.dataport) + i));
     }
 }
-
-int main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
