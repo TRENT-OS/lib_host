@@ -1,7 +1,7 @@
 #
 # The Host Library
 #
-# Copyright (C) 2020, Hensoldt Cyber GmbH
+# Copyright (C) 2020, HENSOLDT Cyber GmbH
 #
 
 cmake_minimum_required(VERSION 3.17)
