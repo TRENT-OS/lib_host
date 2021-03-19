@@ -103,7 +103,8 @@ void
 HostStorage_setFileName(
     const char* name)
 {
-    strncpy(hostFileName, name, sizeof(hostFileName));
+    strncpy(hostFileName, name, sizeof(hostFileName) - 1);
+    hostFileName[sizeof(hostFileName) - 1] = '\0';
 }
 
 OS_Error_t
