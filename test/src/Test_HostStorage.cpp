@@ -15,11 +15,11 @@ extern "C"
 
 extern "C"
 {
-    extern FakeDataport_t* hostStorage_dp;
+    extern FakeDataport_t* hostStorage_port;
     static if_OS_Storage_t storage =
         IF_OS_STORAGE_ASSIGN(
             HostStorage,
-            hostStorage_dp);
+            hostStorage_port);
 }
 
 class Test_HostStorage : public testing::Test

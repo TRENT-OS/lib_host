@@ -15,11 +15,11 @@ extern "C"
 
 extern "C"
 {
-    extern FakeDataport_t* hostEntropy_dp;
+    extern FakeDataport_t* hostEntropy_port;
     static if_OS_Entropy_t entropy =
         IF_OS_ENTROPY_ASSIGN(
             HostEntropy,
-            hostEntropy_dp);
+            hostEntropy_port);
 }
 
 class Test_HostEntropy : public testing::Test

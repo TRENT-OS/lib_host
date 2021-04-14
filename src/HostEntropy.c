@@ -12,9 +12,9 @@
 #include <stdbool.h>
 
 static FakeDataport_t entropyBuf;
-FakeDataport_t* hostEntropy_dp = &entropyBuf;
+FakeDataport_t* hostEntropy_port = &entropyBuf;
 
-static OS_Dataport_t dataport = OS_DATAPORT_ASSIGN(hostEntropy_dp);
+static OS_Dataport_t dataport = OS_DATAPORT_ASSIGN(hostEntropy_port);
 
 // Public Functions -----------------------------------------------------------
 

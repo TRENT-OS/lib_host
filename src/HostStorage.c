@@ -16,9 +16,9 @@
 #include <inttypes.h>
 
 static FakeDataport_t fsBuf;
-FakeDataport_t* hostStorage_dp = &fsBuf;
+FakeDataport_t* hostStorage_port = &fsBuf;
 
-static OS_Dataport_t dataport = OS_DATAPORT_ASSIGN(hostStorage_dp);
+static OS_Dataport_t dataport = OS_DATAPORT_ASSIGN(hostStorage_port);
 
 // Allow these to be overriden by user
 static char   hostFileName[HOSTSTORAGE_FILE_NAME_MAX] = HOSTSTORAGE_FILE_NAME;
